@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Produto</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #F5F3FF; }
+        .container { max-width: 600px; margin: auto; }
+        h1 { font-size: 24px; text-align: center; margin-bottom: 20px; color: #6A0DAD; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #6A0DAD; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #D3CCE3; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #6A0DAD; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #5A0091; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adicionar Produto</h1>
+        <form>
+            <label for="product-name">Nome do Produto</label>
+            <input type="text" id="product-name" name="product-name" placeholder="Digite o nome do produto" required>
+
+            <label for="product-category">Categoria</label>
+            <select id="product-category" name="product-category" required>
+                <option value="" disabled selected>Selecione uma categoria</option>
+                <option value="eletronicos">Eletrônicos</option>
+                <option value="vestuario">Vestuário</option>
+                <option value="alimentos">Alimentos</option>
+            </select>
+
+            <label for="product-price">Preço</label>
+            <input type="number" id="product-price" name="product-price" placeholder="Digite o preço do produto" step="0.01" required>
+
+            <label for="product-stock">Quantidade em Estoque</label>
+            <input type="number" id="product-stock" name="product-stock" placeholder="Digite a quantidade em estoque" required>
+
+            <label for="product-description">Descrição</label>
+            <textarea id="product-description" name="product-description" placeholder="Adicione uma breve descrição do produto" rows="4" required></textarea>
+
+            <button type="submit">Adicionar Produto</button>
+        </form>
+    </div>
+</body>
+</html>
+

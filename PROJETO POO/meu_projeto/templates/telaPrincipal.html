@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listas de Compras</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #F5F3FF; }
+        .container { max-width: 600px; margin: auto; }
+        h1 { font-size: 24px; text-align: center; margin-bottom: 20px; color: #6A0DAD; }
+        .list { background: white; padding: 10px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
+        .list button { background-color: #6A0DAD; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
+        .list button:hover { background-color: #5A0091; }
+        .add-list { display: block; width: 100%; padding: 10px; margin-top: 20px; background-color: #6A0DAD; color: white; text-align: center; text-decoration: none; border-radius: 4px; cursor: pointer; }
+        .add-list:hover { background-color: #5A0091; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minhas Listas</h1>
+        <div id="listas-container">
+            <!-- Listas serão carregadas aqui -->
+        </div>
+        <button class="add-list" onclick="criarLista()">Criar Nova Lista</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", carregarListas);
+
+        function carregarListas() {
+    fetch('/listas')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('listas-container');
+            container.innerHTML = '';
+
+            data.listas.forEach(lista => {
+                const div = document.createElement('div');
+                div.classList.add('list');
+                div.innerHTML = `
+                    <span>${lista.nome} - R$${lista.orcamento ? lista.orcamento.toFixed(2) : "0.00"}</span>
+                    <div>
+                        <button onclick="abrirLista(${lista.id})" style="background-color: #6A0DAD;">Abrir</button>
+                        <button onclick="editarLista(${lista.id})">Editar</button>
+                        <button onclick="excluirLista(${lista.id})">Excluir</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        })
+        .catch(error => console.error('Erro ao carregar listas:', error));
+}
+
+    function abrirLista(lista_id) {
+        window.location.href = `/listas/${lista_id}`;
+    }
+
+
+
+        function criarLista() {
+            const nome = prompt("Digite o nome da nova lista:");
+            const orcamento = prompt("Digite o orçamento:");
+
+            if (!nome) return;
+
+            fetch('/listas/criar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, orcamento })
+            })
+            .then(response => response.json())
+            .then(() => carregarListas())
+            .catch(error => console.error('Erro ao criar lista:', error));
+        }
+
+        function editarLista(lista_id) {
+            const novoNome = prompt("Digite o novo nome da lista:");
+            const novoOrcamento = prompt("Digite o novo orçamento:");
+
+            if (!novoNome) return;
+
+            fetch(`/listas/editar/${lista_id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome: novoNome, orcamento: novoOrcamento })
+            })
+            .then(() => carregarListas())
+            .catch(error => console.error('Erro ao editar lista:', error));
+        }
+
+        function excluirLista(lista_id) {
+            if (!confirm("Tem certeza que deseja excluir esta lista?")) return;
+
+            fetch(`/listas/excluir/${lista_id}`, {
+                method: 'DELETE'
+            })
+            .then(() => carregarListas())
+            .catch(error => console.error('Erro ao excluir lista:', error));
+        }
+    </script>
+</body>
+</html>

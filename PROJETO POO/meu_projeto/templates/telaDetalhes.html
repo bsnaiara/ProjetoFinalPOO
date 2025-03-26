@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Lista</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #F5F3FF; }
+        .container { max-width: 600px; margin: auto; }
+        h1 { font-size: 24px; text-align: center; margin-bottom: 20px; color: #6A0DAD; }
+        .product { background: white; padding: 10px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
+        .product button { background-color: #FF5733; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .product button:hover { background-color: #E74C3C; }
+        .add-product { display: block; width: 100%; padding: 10px; margin-top: 20px; background-color: #6A0DAD; color: white; text-align: center; text-decoration: none; border-radius: 4px; }
+        .add-product:hover { background-color: #5A0091; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista: {{ lista.nome }}</h1>
+        <h3>Orçamento: R$ {{ "%.2f"|format(lista.orcamento or 0) }}</h3>
+
+        {% if produtos %}
+            {% for produto in produtos %}
+            <div class="product">
+                <span>{{ produto.nome }} - R$ {{ "%.2f"|format(produto.preco or 0) }}</span>
+                <button onclick="removerProduto({{ produto.id }}, {{ lista.id }})">Remover</button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; color: #6A0DAD;">Nenhum produto na lista.</p>
+        {% endif %}
+
+        <!-- Alterado para redirecionar para a tela de produtos -->
+        <a href="/produtos" class="add-product">Adicionar Produto</a>
+    </div>
+
+    <script>
+        function removerProduto(produtoId, listaId) {
+            if (!confirm("Deseja remover este produto?")) return;
+
+            fetch(`/listas/${listaId}/remover-produto/${produtoId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    location.reload();
+                } else {
+                    console.error("Erro ao remover produto:", data.error);
+                }
+            })
+            .catch(error => console.error("Erro ao remover produto:", error));
+        }
+    </script>
+</body>
+</html>
